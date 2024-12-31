@@ -13,36 +13,49 @@ export const LABELS = {
   password: "Password",
   confirmPassword: "Confirm Password",
 
-  actions:"Actions",
-  search:"Search",
-  reset:"Reset",
-  save:"Save"
-  
+  actions: "Actions",
+  search: "Search",
+  reset: "Reset",
+  save: "Save",
 };
 
 export const LOCATORS = {
   userFormHeader: ".user-form-header",
   inputGroup: ".oxd-input-group",
- 
+
   dropdownOptions: ".oxd-select-dropdown",
   dropdownArrow: ".oxd-icon.bi-caret-down-fill.oxd-select-text--arrow", // Locator to open dropdown
 
   employeeNameInput: 'input[placeholder="Type for hints..."]',
-  autocompleteDropdown: ".oxd-autocomplete-dropdown", 
-  autocompleteOption: ".oxd-autocomplete-option", 
+  autocompleteDropdown: ".oxd-autocomplete-dropdown",
+  autocompleteOption: ".oxd-autocomplete-option",
 
-  employeeNameField: '.oxd-autocomplete-wrapper', 
-  userRoleDropdown: '.oxd-select-wrapper', 
-  statusDropdown: '.oxd-select-wrapper',
+  employeeNameField: ".oxd-autocomplete-wrapper",
+  userRoleDropdown: ".oxd-select-wrapper",
+  statusDropdown: ".oxd-select-wrapper",
 
-  records:'[data-v-5a621acd]',
+  records: "[data-v-5a621acd]",
+
+  table: ".oxd-table-body",
+  tableRow: ".oxd-table-body .oxd-table-row",
+  tableCell:".oxd-table-cell",
+  //oxd-table
 
   // Buttons
   addButton:
-  'button[data-v-10d463b7][class="oxd-button oxd-button--medium oxd-button--secondary"]',
-  resetButton: '.oxd-button--ghost', 
-  searchButton: '.oxd-button--secondary', 
+    'button[data-v-10d463b7][class="oxd-button oxd-button--medium oxd-button--secondary"]',
+  resetButton: ".oxd-button--ghost",
+  searchButton: ".oxd-button--secondary",
 };
+
+const tableHeader = [
+  LABELS.username,
+  LABELS.userRole,
+  LABELS.employeeName,
+  LABELS.actions,
+  LABELS.status,
+];
+
 
 export default class AdminPage {
   static visit(visitBaseUrl: boolean = false) {
@@ -56,5 +69,7 @@ export default class AdminPage {
   static click_on_add() {
     WebElementsHandler.click_on_element_by_locator(LOCATORS.addButton);
   }
+
+ 
 
 }

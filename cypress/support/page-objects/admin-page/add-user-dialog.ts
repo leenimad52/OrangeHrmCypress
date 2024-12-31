@@ -10,6 +10,7 @@ export interface IUserDetails {
   employeeName: string;
   username: string;
   password: string;
+  confirmpassword: string;
 }
 
 export default class AddUserDialog {

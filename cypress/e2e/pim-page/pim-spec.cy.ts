@@ -1,114 +1,83 @@
-import { faker } from '@faker-js/faker';
-import CommonHelper from "../../support/helpers/common-helper";
-import AddEmployeeDialog, { IEmployeeDetails, IEmployeeLoginDetails } from "../../support/page-objects/pim-page/add-emp-dialog";
-import PimPage from "../../support/page-objects/pim-page/pim-page";
-import moment = require('moment');
-import EditEmployeeDialog, { DETAILS_TABS } from '../../support/page-objects/pim-page/edit-emp-dialog';
+import moment = require("moment")
+import CommonHelper from "../../support/helpers/common-helper"
+import { PAGES } from "../../support/helpers/constatns"
+import WebElementsHandler, { keyValue, PIM_TABLE_HEADERS } from "../../support/helpers/web-elements-handler"
+import AddEmployeeDialog from "../../support/page-objects/pim-page/add-emp-dialog"
+import EditEmployeeDialog, { EmployeePersonalDetails, EmployeeCustomFields } from "../../support/page-objects/pim-page/edit-emp-dialog"
+import PimPage, { PIM_TABS, EmployeeDetails } from "../../support/page-objects/pim-page/pim-page"
 
-describe("PIM page test cases", () => {
+
+describe('Personnel Information Management Page', () => {
 
     beforeEach(() => {
-        cy.login();
-        PimPage.visit();
-    });
+        cy.login()
 
-    it("PIM - Add Employee Without Login Details", () => {
-        PimPage.click_on_add_employee();
+        PimPage.visit(true)
+    })
 
-        const empInfo: IEmployeeDetails = {
-            firstName: CommonHelper.generate_random_string(undefined, 7),
-            lastName: CommonHelper.generate_random_string(undefined, 8),
-            employeeId: faker.string.uuid().substring(0, 10),
+    it('PIM - Add Employee UI', () => {
+        PimPage.select_tab(PIM_TABS.ADD_EMPLOYEE)
 
-            otherId: faker.string.uuid().substring(0, 10),
-            drivingLicenseNo: CommonHelper.generate_random_number() + CommonHelper.generate_random_string(undefined, 10),
-            drivingLicenseExpiredDate: moment().format('YYYY-DD-MM'),
+        const empDetails: EmployeeDetails = {
+            firstName: "leen",
+            middleName:"imad",
+            lastName: "soud",
+            employeeId: CommonHelper.generate_random_number(1000, 9999, 'empId_')
+        }
+
+        const empLoginDetails = {
+            username:CommonHelper.generate_random_string(undefined, 7),
+            password: "Leen@123"
+        }
+
+        AddEmployeeDialog.fill_employee_details(empDetails, empLoginDetails)
+        AddEmployeeDialog.click_on_save_button()
+        AddEmployeeDialog.validate_success_alert()
+
+        EditEmployeeDialog.validate_employee_details(empDetails)
+
+        const empPersonalDetails: EmployeePersonalDetails = {
+            otherId: "",
+            licenseNumber: "",
+            licenseExpiryDate: moment().format('YYYY-DD-MM'),
             nationality: 'Afghan',
             maritalStatus: ['Single', 'Married', 'Other'][CommonHelper.generate_random_number(0, 2)],
-            birthday: moment().subtract(CommonHelper.generate_random_number(15, 20)).format('YYYY-DD-MM'),
+            dateOfBirth: moment().subtract(CommonHelper.generate_random_number(18, 60), 'years').format('YYYY-DD-MM'),
             gender: ['Male', 'Female'][CommonHelper.generate_random_number(0, 1)]
-        };
+        }
+        EditEmployeeDialog.fill_personal_details(empPersonalDetails)
+        EditEmployeeDialog.click_on_save_button()
+        EditEmployeeDialog.validate_success_alert()
 
-        AddEmployeeDialog.fill_employee_details(empInfo, null); // No login details 
-        AddEmployeeDialog.click_on_save_button();
+        const empCustomFields: EmployeeCustomFields = {
+            bloodType: ['A+', 'B+', 'AB+', 'O+', 'A-', 'B-', 'AB-', 'O-'][CommonHelper.generate_random_number(0, 7)],
+            testField: CommonHelper.generate_random_string('test_')
+        }
+        EditEmployeeDialog.fill_custom_fields(empCustomFields)
+        EditEmployeeDialog.click_on_save_button()
+        EditEmployeeDialog.validate_success_alert()
 
-        // Assert successful save
-        cy.contains('Employee successfully added').should('be.visible');
+        EditEmployeeDialog.click_on_save_button()
+
+        EditEmployeeDialog.validate_success_alert()
+
+        PimPage.visit()
+        const validationData: keyValue = {
+            [PIM_TABLE_HEADERS.ID]: empDetails.employeeId,
+            [PIM_TABLE_HEADERS.FIRSTnMiddle_NAME]: `${empDetails.firstName} ${empDetails.middleName}`,
+            [PIM_TABLE_HEADERS.LAST_NAME]: empDetails.lastName,
+            [PIM_TABLE_HEADERS.JOB_TITLE]: ''
+        }
+        WebElementsHandler.validate_table_row(validationData)
+    })
+
+
+     it("PIM - Add Employee Without Login Details", () => {
+
+        
     });
+    it("PIM - Add Employee Without Middle Name", () => {})
+    it("PIM - Add Employee with Duplicate ID", () => {})
 
 
-    it("PIM - Add Valid Employee with Login Details", () => {
-        PimPage.click_on_add_employee();
-
-        const empInfo: IEmployeeDetails = {
-            firstName: CommonHelper.generate_random_string(undefined, 7),
-            middleName: CommonHelper.generate_random_string(undefined, 30),
-            lastName: CommonHelper.generate_random_string(undefined, 8),
-            employeeId: faker.string.uuid().substring(0, 10),
-
-            otherId: faker.string.uuid().substring(0, 10),
-            drivingLicenseNo: CommonHelper.generate_random_number() + CommonHelper.generate_random_string(undefined, 10),
-            drivingLicenseExpiredDate: moment().format('YYYY-DD-MM'),
-            nationality: 'Afghan',
-            maritalStatus: ['Single', 'Married', 'Other'][CommonHelper.generate_random_number(0, 2)],
-            birthday: moment().subtract(CommonHelper.generate_random_number(15, 20)).format('YYYY-DD-MM'),
-            gender: ['Male', 'Female'][CommonHelper.generate_random_number(0, 1)]
-        };
-
-        const empLoginDetails: IEmployeeLoginDetails = {
-            username: CommonHelper.generate_random_string(undefined, 7),
-            password: CommonHelper.generate_random_string('P1', 8)
-        };
-        AddEmployeeDialog.fill_employee_details(empInfo, empLoginDetails);
-        AddEmployeeDialog.click_on_save_button();
-
-        EditEmployeeDialog.select_tab(DETAILS_TABS.PERSONAL_DETAILS);
-        EditEmployeeDialog.fill_personal_details(empInfo);
-    });
-
-///////////////////////////////////
-it("PIM - Add Employee Without Middle Name", () => {
-    PimPage.click_on_add_employee();
-
-    const empInfo: IEmployeeDetails = {
-        firstName: CommonHelper.generate_random_string(undefined, 7),
-        lastName: CommonHelper.generate_random_string(undefined, 8),
-        employeeId: faker.string.uuid().substring(0, 10),
-    };
-
-    const empLoginDetails: IEmployeeLoginDetails = {
-        username: CommonHelper.generate_random_string(undefined, 7),
-        password: CommonHelper.generate_random_string('P1', 8)
-    };
-
-    AddEmployeeDialog.fill_employee_details(empInfo, empLoginDetails);
-    AddEmployeeDialog.click_on_save_button();
-
-    EditEmployeeDialog.select_tab(DETAILS_TABS.PERSONAL_DETAILS);
-    EditEmployeeDialog.fill_personal_details(empInfo);
-});   
-///////////////////////////////////
-it.only("PIM - Add Employee with Duplicate ID", () => {
-    PimPage.click_on_add_employee();
-
-    const duplicateId = "0430"; // Example of a duplicate ID
-
-    const empInfo: IEmployeeDetails = {
-        firstName: CommonHelper.generate_random_string(undefined, 7),
-        lastName: CommonHelper.generate_random_string(undefined, 8),
-        employeeId: duplicateId, // Using a duplicate ID
-    };
-
-    const empLoginDetails: IEmployeeLoginDetails = {
-        username: CommonHelper.generate_random_string(undefined, 7),
-        password: CommonHelper.generate_random_string('P1', 8)
-    };
-
-    AddEmployeeDialog.fill_employee_details(empInfo, empLoginDetails);
-    AddEmployeeDialog.click_on_save_button();
-    
-    AddEmployeeDialog.validate_required_field(duplicateId)
-    // Validate error message
-    cy.contains("Employee ID already exists").should('be.visible');
-});
-});
+})

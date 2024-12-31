@@ -2,7 +2,7 @@ import LoginPage, { ALERT_MSGS } from "../../support/page-objects/login-page"
 
 describe('Login Page', () => {
 
-  let usersInfo: any = {} //empty variable that will store user data
+  let usersInfo: any = {} 
 
   before(() => {
     cy.fixture("users").then(usersData => { 

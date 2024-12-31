@@ -6,8 +6,8 @@ export default class CommonHelper {
         return prefix + faker.string.alpha({ length: maxLength - prefix.length, casing: 'mixed' })
     }
 
-    static generate_random_number(min: number = 0, max: number = 1000) {
-        return faker.number.int({ min, max })
+    static generate_random_number(min: number, max: number, prefix: string = '') {
+        return prefix + faker.number.int({ min, max })
     }
 
 }

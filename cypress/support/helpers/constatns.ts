@@ -3,7 +3,9 @@ export const apiBaseUrl = '/web/index.php/api/v2'
 export enum PAGES {
     DASHBOARD = "Dashboard",
     ADMIN = "Admin",
-    PIM = "PIM"
+    PIM = "PIM",
+    BUZZ = "Buzz",
+
 }
 
 export const ASSERTION={
@@ -24,13 +26,25 @@ export const HTML_TAGS = {
     li: 'li',
     input: 'input',
     button: 'button',
-    div:"div"
+    div:"div",
+    Column:"Column",
+    textarea: 'textarea'
+
     
 }
 
 export enum API_URLS {
     PIM_EMPLOYEES = '/pim/employees*',
-    ADMIN='/admin/viewSystemUsers*'
+    ADMIN='/admin/viewSystemUsers*',
+    
+}
+
+export enum PAGE_URLS {
+    DASHBOARD = '/dashboard',
+    BUZZ = '/buzz',
+    ADMIN = '/admin',
+    PIM = '/pim',
+    ADD_EMPLOYEE = '/pim/addEmployee'
 }
 
 export enum HTTPS_METHODS {
